@@ -76,8 +76,8 @@ function clearQueue(){
     <section id="files-list" class="uploading-list collapse show">
       <div class="list-item" v-for="(file, i) in filesToUpload" :key="file.preview">
         <span v-if="!uploading">{{ i+1 }}</span>
-        <span v-else-if="file.completed"><i class="mdi mdi-checkbox-marked text-success"></i></span>
-        <span v-else-if="file.failed"><i class="mdi mdi-close-box text-danger"></i></span>
+        <span v-else-if="file.completed"><i class="mdi mdi-checkbox-marked text-teal fs-5"></i></span>
+        <span v-else-if="file.failed"><i class="mdi mdi-close-box text-red fs-5"></i></span>
         <span v-else><i class="mdi mdi-loading mdi-spin"></i></span>
         <img class="preview" :src="file.preview" alt="">
         <input v-model="file.file.name" class="form-control border-0" type="text">

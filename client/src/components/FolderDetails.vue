@@ -4,23 +4,27 @@ import { computed } from 'vue';
 import AddFolderForm from './AddFolderForm.vue';
 import ModalWrapper from './ModalWrapper.vue';
 import { backupService } from '@/services/backupService.js';
+import { byteSize } from '@/utils/Converters.js';
 
 const activeDir = computed(()=> AppState.activeDir)
 const dirSize = computed(()=> {
   const bytes = AppState.activeDir?._files.reduce((acc, cur)=> acc + cur.size, 0)
-  const kilo = bytes /1024
-  if(kilo < 1024) return kilo.toFixed(3) + 'kb'
-  const mega = kilo / 1024
-  if(mega < 1024) return mega.toFixed(3) + 'mb'
-  const gig = mega / 1024
-  if(gig < 1024) return gig.toFixed(3) + 'gb'
-  const tera = gig /1024
-  return tera.toFixed(3)  + 'tb'
+  return byteSize(bytes)
+})
+const hotSize = computed(()=>{
+  const bytes = AppState.activeDir?._files.reduce((acc, cur)=> acc + (cur.thumbnail?.size ?? 0), 0)
+  return byteSize(bytes)
 })
 const dirCost = computed(()=>{
   const bytes = AppState.activeDir?._files.reduce((acc, cur)=> acc + cur.size, 0)
   const gigs = bytes/1024/1024/1024
-  return Intl.NumberFormat('en-us', {currency: 'USD'}).format(gigs * AppState.coldPriceUSD)
+  return (gigs * AppState.coldPriceUSD).toFixed(6)
+})
+
+const hotCost = computed(()=>{
+  const hotbytes =AppState.activeDir?._files.reduce((acc, cur)=> acc + (cur.thumbnail?.size ?? 0), 0)
+  const gigs = hotbytes/1024/1024/1024
+ return (gigs * AppState.hotPriceUSD).toFixed(6)
 })
 
  async function deleteDir(){
@@ -38,8 +42,8 @@ const dirCost = computed(()=>{
           <div class="fs-5 fw-bold">{{ activeDir.name || 'base' }}</div>
           <small class="d-flex gap-2">
             <span class="text-secondary">/{{ activeDir.folderSlug }}</span>
-            <span class="rounded-pill bg-yellow-soft px-2">{{ dirSize }}</span>
-            <span class="rounded-pill bg-teal-soft px-2">$ {{ dirCost }}</span>
+            <span class="rounded-pill bg-primary-soft px-2" :title="`+ an additional ${hotSize} for previews`">{{ dirSize }}</span>
+            <span class="rounded-pill bg-green-soft px-2" :title="`+ an additional ${hotCost} for previews`">$ {{ dirCost }}</span>
           </small>
         </section>
         <section class="d-flex">
@@ -52,6 +56,7 @@ const dirCost = computed(()=>{
             <i class="mdi mdi-cog-outline"></i>
           </button>
           <ul class="dropdown-menu">
+            <li><button class="dropdown-item">Download folder files <i class="mdi mdi-file-download text-teal"></i></button></li>
             <li><button @click="deleteDir" class="dropdown-item text-danger" type="button">Delete Folder</button></li>
           </ul>
         </div>
