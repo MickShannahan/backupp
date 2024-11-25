@@ -3,6 +3,7 @@ import { Folder } from '@/models/Folder.js';
 import { backupService } from '@/services/backupService.js';
 import { logger } from '@/utils/Logger.js';
 import Pop from '@/utils/Pop.js';
+import { Modal } from 'bootstrap';
 import { ref, watch } from 'vue';
 
 const props = defineProps({folderData: Folder, parentData: Folder})
@@ -24,6 +25,7 @@ watch(props, ()=>{
 async function createFolder(){
   try {
       await backupService.createFolder(formData.value)
+      Modal.getOrCreateInstance('#create-folder-form')?.hide()
   } catch (error) {
     Pop.error(error)
     logger.error(error)
@@ -36,7 +38,7 @@ async function createFolder(){
 <form @submit.prevent="createFolder">
   <div class="fw-bold mb-2">Add folder</div>
   <div class="mb-3">
-    <label for="folder-name">
+    <label for="folder-name" class="mb-2">
       {{parentData.folderSlug ? parentData.folderSlug + '/' : ''}}
       <span class="border px-1 rounded text-success">{{ formData.name }}</span>
     </label>

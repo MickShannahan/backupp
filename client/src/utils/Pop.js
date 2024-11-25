@@ -4,7 +4,7 @@ import 'sweetalert2/dist/sweetalert2.min.css'
 const colorConfig = {
   confirmButtonColor: 'var(--bs-success)',
   cancelButtonColor: 'var(--bs-danger)',
-  background: 'var(--bs-page)',
+  background: 'var(--bs-black)',
   color: 'var(--bs-text)'
 }
 
@@ -18,8 +18,7 @@ export default class Pop {
     Pop.toast('Oh No!', error?.message ?? 'something went wrong', 'error', hint ?? 'Refresh the page and try again. If issue persists please let us know')
   }
 
-  static toast(title = 'Toast is ready', text = '', icon = 'info', footer = '', position = 'top') {
-    console.log('swal fire')
+  static toast(title = 'Toast is ready', text = '', icon = 'info', footer = '', position = 'bottom') {
     // @ts-ignore
     Swal.fire({
       title,
@@ -27,7 +26,7 @@ export default class Pop {
       icon,
       footer,
       toast: true,
-      timer: 8000,
+      timer: 4000,
       position,
       timerProgressBar: true,
       showConfirmButton: false,

@@ -38,7 +38,7 @@ function handleDrop(e){
     left: 0;
     width: 100%;
     height: 100%;
-    outline: 2px dashed blueviolet;
+    outline: 2px dashed var(--bs-primary);
     outline-offset: -2px;
     background-color: rgba(137, 43, 226, 0.2);
     content: '';

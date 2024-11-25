@@ -32,16 +32,14 @@ const dirCost = computed(()=>{
 
 
 <template>
-<div class="container-fluid p-2 sticky-top ">
-  <section class="row">
-    <div v-if="activeDir">
+    <div v-if="activeDir" class="container-fluid sticky-top">
       <div class="bg-glass border rounded d-flex justify-content-between align-items-center p-2">
         <section>
           <div class="fs-5 fw-bold">{{ activeDir.name || 'base' }}</div>
           <small class="d-flex gap-2">
             <span class="text-secondary">/{{ activeDir.folderSlug }}</span>
-            <span class="rounded-pill text-dark bg-warning px-2">{{ dirSize }}</span>
-            <span class="rounded-pill text-success bg-black px-2">$ {{ dirCost }}</span>
+            <span class="rounded-pill bg-yellow-soft px-2">{{ dirSize }}</span>
+            <span class="rounded-pill bg-teal-soft px-2">$ {{ dirCost }}</span>
           </small>
         </section>
         <section class="d-flex">
@@ -60,8 +58,6 @@ const dirCost = computed(()=>{
         </section>
       </div>
     </div>
-  </section>
-</div>
 <ModalWrapper v-if="activeDir" id="create-folder-form">
   <AddFolderForm :parentData="activeDir"/>
 </ModalWrapper>
@@ -69,5 +65,7 @@ const dirCost = computed(()=>{
 
 
 <style lang="scss" scoped>
-
+.sticky-top{
+  top: .5em;
+}
 </style>

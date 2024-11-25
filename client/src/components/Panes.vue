@@ -1,15 +1,14 @@
 <script setup>
 import { AppState } from '@/AppState.js';
 import { computed, onMounted, ref } from 'vue';
-import AddFilesForm from './AddFilesForm.vue';
 import FileCard from './FileCard.vue';
 import { backupService } from '@/services/backupService.js';
 import Pop from '@/utils/Pop.js';
-import AddFolderForm from './AddFolderForm.vue';
 import FileDropZone from './FileDropZone.vue';
 import { logger } from '@/utils/Logger.js';
 import FolderTree from './FolderTree.vue';
 import FolderDetails from './FolderDetails.vue';
+import Options from './Options.vue';
 
 onMounted(()=> window.addEventListener('keydown', handleKey))
 onMounted(()=> window.addEventListener('keyup', clearKey))
@@ -27,15 +26,18 @@ function handleKey(e){
     case 'Delete':
       deleteFiles()
       break
-      case 'a':
-        if(!e.altKey) break
-        selectAll()
-        break
-        case 'Shift':
-          shiftDown.value = true
-          break
-        }
-      }
+    case 'Enter' :
+      downloadSelection()
+      break
+    case 'a':
+      if(!e.altKey) break
+      selectAll()
+      break
+    case 'Shift':
+      shiftDown.value = true
+      break
+  }
+}
 
 function clearKey(e){
   switch(e.key){
@@ -95,23 +97,34 @@ async function deleteFiles(){
     await backupService.deleteBackup(f.id, f.folder)
     selectedFiles.value.splice(selectedFiles.value.indexOf(f),1)
     if(selectedFiles.value.length == 0){
-      Pop.toast("Deletion complete", '', 'success', '', 'center')
+      Pop.toast("Deletion complete", '', 'success')
     }
   }
+
+}
+async function downloadSelection(){
+  const urls = []
+  selectedFiles.value.forEach(f => urls.push(f.url))
+  logger.log('downloading', urls)
+  backupService.downloadFromUrls(urls, activeDir.value.name)
 }
 
 </script>
 
 
 <template>
-    <FolderDetails/>
-  <div class="panes">
-    <!-- SECTION trunk -->
-    <section class="d-flex flex-column">
-      <FolderTree :folder="AppState.backup" :alwaysOpen="true" :level="-1"/>
-    </section>
-    <!-- SECTION main view -->
-     <FileDropZone :folder="AppState.activeDir?.folderSlug ?? ''">
+  <FolderDetails/>
+  <div class="container-fluid">
+
+    <div class="panes my-2">
+      <!-- SECTION trunk -->
+      <section class="d-flex flex-column">
+        <div>
+          <FolderTree :folder="AppState.backup" :alwaysOpen="true" :level="-1"/>
+        </div>
+        </section>
+      <!-- SECTION main view -->
+      <FileDropZone :folder="AppState.activeDir?.folderSlug ?? ''">
           <section class="files-grid">
             <TransitionGroup name="list">
               <div v-for="file in files" :key="file.name" class="file-container">
@@ -119,14 +132,14 @@ async function deleteFiles(){
               </div>
             </TransitionGroup>
           </section>
-      </FileDropZone>
+        </FileDropZone>
     <!-- SECTION options -->
-    <section>
-      <!-- <AddFilesForm/> -->
-       <div>options</div>
+    <section >
+        <Options :show="selectedFiles.length > 0"></Options>
     </section>
   </div>
-
+</div>
+  
   <section class="context-wrapper">
     <span class="tab" :class="{active: selectedFiles.length}">Selected <b>{{ selectedFiles.length }}</b> <i class="mdi mdi-circle-small"></i> <kbd>del</kbd> to delete</span>
   </section>
@@ -137,11 +150,11 @@ async function deleteFiles(){
 
 .panes{
   display: grid;
-  grid-template-columns: 250px 1fr 100px;
+  grid-template-columns: 250px 1fr 60px;
   grid-template-rows: 1fr;
   min-height: 100dvh;
   &>section{
-    padding: .5em;
+    padding: 0 .35em;
     overflow: visible;
   }
   &>section:first-child{
@@ -175,14 +188,14 @@ async function deleteFiles(){
   padding: .5em;
   pointer-events: none;
   .tab{
-    background-color: rgba(61, 60, 134, 0.315);
+    background-color: rgba(var(--bs-primary), 0.315);
     backdrop-filter: blur(20px);
     padding: .25em 1em;
     border-radius: 50px;
     border: 1px solid rgba(128, 128, 128, 0.2);
     transform: translateY(5em);
     transition: all .3s ease;
-    box-shadow: 0px 2px 4px black;
+    box-shadow: 0px 2px 4px rgba(0,0,0,4);
 
   }
   .tab.active{

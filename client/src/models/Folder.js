@@ -22,5 +22,6 @@ export class Folder {
     this._folders = data._folders ?? {}
     this.fileCount = data.fileCount ?? this._files.length
     this.folderCount = data.folderCount ?? this._folders.length
+    this.fetchedExp = null
   }
 }

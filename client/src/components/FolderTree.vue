@@ -26,7 +26,7 @@ async function preFetchFolder(){
 
 <template>
 <section class="folder-indent d-flex flex-column">
-    <button @mouseenter="preFetchFolder" @click="openFolder()" class="btn selectable d-flex text-start" :class="{active}">
+    <button @mouseenter="preFetchFolder" @click="openFolder()" class="btn selectable-primary d-flex text-start" :class="{active}">
       <i v-if="level > 0" class="tree-line"></i>
       <i v-if="!open" class="mdi mdi-folder me-1"></i>
       <i v-else class="mdi mdi-folder-open me-1"></i>
@@ -50,8 +50,8 @@ async function preFetchFolder(){
 small{
   display: flex;
   gap: 5px;
-  opacity: .5;
   margin: 0px 5px;
+  color: rgba(var(--bs-light-rgb), .5);
 }
 .tree-line{
   display: block;
@@ -64,9 +64,10 @@ small{
     height: 12px;
     border-width: 0px;
     border-color: var(--bs-secondary);
-    border-style: dashed;
+    border-style: dotted;
     border-bottom-width: 1px;
     border-left-width: 1px;
+    border-bottom-left-radius: 3px;
   }
 }
 

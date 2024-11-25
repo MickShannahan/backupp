@@ -4,6 +4,8 @@ import { logger } from "@/utils/Logger.js"
 import Pop from "@/utils/Pop.js"
 import { Folder } from "@/models/Folder.js"
 import { File } from "@/models/File.js"
+import { downloadZip } from "client-zip"
+import { DownloadStream } from "dl-stream"
 
 
 
@@ -67,20 +69,50 @@ class BackupService {
     dir._folders[folder.name] = folder
 
   }
+
+  async downloadFromUrls(urls, folderName) {
+    try {
+      const requests = urlsToRequests(urls)
+      const stream = new DownloadStream(requests)
+      const zipRes = downloadZip(stream)
+      const blob = await zipRes.blob()
+      const link = document.createElement('a')
+      const url = URL.createObjectURL(blob)
+      link.href = url
+      link.download = `${folderName || 'backup'}.zip`
+      link.click()
+      link.remove()
+      URL.revokeObjectURL(url)
+    } catch (error) {
+      logger.error(error)
+      Pop.error(error)
+    }
+  }
+}
+
+function urlsToRequests(urls) {
+  return urls.map(url => new Request(url,
+    { method: 'GET', headers: { Accept: '*' } })
+  )
+}
+
+async function* awaitable(downloadStream) {
+  for await (let res of downloadStream) {
+    logger.log(res)
+    yield res
+  }
 }
 
 function urlSafe(url) {
   return encodeURIComponent(url)
 }
 
-function getFolderDir(dir, folderPath) {
+export function getFolderDir(dir, folderPath) {
   if (folderPath === '') return dir
-  logger.log('nested dir', dir, folderPath)
   folderPath = folderPath.startsWith('/') ? folderPath.slice(1) : folderPath
   let nextSlash = folderPath.includes('/') ? folderPath.indexOf('/') : folderPath.length
   let cut = folderPath.slice(0, nextSlash)
   let rest = folderPath.slice(nextSlash)
-  logger.log('digging', cut, rest)
   return getFolderDir(dir._folders[cut], rest)
 }
 

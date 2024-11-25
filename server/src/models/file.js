@@ -21,6 +21,7 @@ export class FileDTO {
 export const fileSchema = new Schema({
   name: { type: String, minLength: 2, maxLength: 100 },
   slug: { type: String },
+  url: { type: String },
   type: { type: String, maxLength: 100 },
   size: { type: Number, required: true, default: 0 },
   thumbnail: { type: Object },

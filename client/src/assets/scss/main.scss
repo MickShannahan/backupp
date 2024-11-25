@@ -1,113 +1,135 @@
+// Required
+@import "bootstrap/scss/functions";
+// Required
+@import "bootstrap/scss/variables";
+@import "bootstrap/scss/variables-dark";
+// Default variable overrides
 @import "./_variables.scss";
-@import "./_utilities.scss";
-@import "./loaders.scss";
+// $theme-colors: map-merge-multiple($blues, $indigos, $purples, $pinks, $reds, $oranges, $yellows, $greens, $teals, $cyans, $theme-colors);
+@import "bootstrap/scss/maps";
+@import "bootstrap/scss/mixins";
+@import "bootstrap/scss/root";
+// Merge in all extended colors and weights
+@import "bootstrap/scss/utilities";
+@import "bootstrap/scss/utilities/api";
+// Optional Bootstrap components here
+@import "bootstrap/scss/reboot";
+@import "bootstrap/scss/buttons";
+@import "bootstrap/scss/type";
+@import "bootstrap/scss/images";
+@import "bootstrap/scss/containers";
+@import "bootstrap/scss/grid";
+// @import "bootstrap/scss/tables";
+@import "bootstrap/scss/forms";
+@import "bootstrap/scss/transitions";
+@import "bootstrap/scss/dropdown";
+@import "bootstrap/scss/button-group";
+@import "bootstrap/scss/nav";
+@import "bootstrap/scss/navbar";
+@import "bootstrap/scss/card";
+// @import "bootstrap/scss/accordion";
+// @import "bootstrap/scss/breadcrumb";
+// @import "bootstrap/scss/pagination";
+@import "bootstrap/scss/badge";
+// @import "bootstrap/scss/alert";
+@import "bootstrap/scss/progress";
+@import "bootstrap/scss/list-group";
+@import "bootstrap/scss/close";
+@import "bootstrap/scss/toasts";
+@import "bootstrap/scss/modal";
+@import "bootstrap/scss/tooltip";
+@import "bootstrap/scss/popover";
+// @import "bootstrap/scss/carousel";
+// @import "bootstrap/scss/spinners";
+@import "bootstrap/scss/offcanvas";
+@import "bootstrap/scss/placeholders";
+@import "bootstrap/scss/helpers";
 
 .bg-glass {
-  background-color: rgba(var(--bs-dark-rgb), .5);
+  background: rgba(var(--bs-black-rgb), .2);
   backdrop-filter: blur(10px);
 }
 
-body {
-  overscroll-behavior: none;
+.no-highlight {
+  user-select: none;
 }
 
-#app {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  background-color: var(--bs-page);
-}
+.selectable {
+  position: relative;
 
-main {
-  flex-grow: 1;
-}
+  &:hover {
+    cursor: pointer;
 
-a {
-  text-decoration: none;
-}
-
-// SECTION sweet alerts styles
-
-.swal2-container {
-  width: unset !important;
-  padding-top: calc(64px + 6px);
-}
-
-.swal2-popup {
-  --popup-c: var(--bs-primary);
-
-  &:has(.swal2-success) {
-    --popup-c: var(--bs-success);
+    &:after {
+      opacity: 0.1;
+    }
   }
 
-  &:has(.swal2-error) {
-    --popup-c: var(--bs-danger);
-  }
-
-  &:has(.swal2-warning) {
-    --popup-c: var(--bs-warning);
-  }
-
-  &::before {
-    position: absolute;
-    content: '';
-    height: 100%;
-    width: 4px;
-    background-color: var(--popup-c);
-  }
-
-  .swal2-html-container {
-    color: var(--vp-c-text-2)
-  }
-
-  .swal-err-msg {
-    font-family: monospace;
-    max-width: 50ch;
-    word-wrap: normal;
-    border-radius: 4px;
-    padding: .5em;
-    color: var(--vp-c-danger-1);
-    background-color: var(--vp-c-bg-soft);
-  }
-}
-
-.swal2-footer {
-  border-color: var(--vp-c-border);
-  color: var(--vp-c-text-2)
-}
-
-div.swal2-timer-progress-bar {
-  background-color: var(--vp-c-brand-soft);
-}
-
-.swal2-popup .swal2-icon-show,
-.swal2-popup .swal2-icon-show [class*=-ring] {
-  border-color: var(--popup-c);
-  color: var(--popup-c);
-}
-
-.swal2-popup .swal2-icon-show [class*=-line] {
-  background-color: var(--popup-c);
-}
-
-.swal-custom-popup {
-  animation: blink-toasty .3s ease forwards;
-}
-
-@keyframes blink-toasty {
-  0% {
-    background-color: var(--popup-c);
+  &:after {
+    border-radius: inherit;
+    bottom: 0;
+    color: inherit;
+    content: "";
+    left: 0;
     opacity: 0;
-    transform: translateY(10px);
+    pointer-events: none;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transition: opacity 0.2s cubic-bezier(0.4, 0, 0.6, 1);
+    background-color: currentColor;
+  }
+}
+
+@each $name, $val in $theme-colors {
+  .selectable-#{$name} {
+    position: relative;
+
+    &:hover {
+      cursor: pointer;
+
+      &:after {
+        opacity: 0.175;
+      }
+    }
+
+    &:after {
+      border-radius: inherit;
+      bottom: 0;
+      color: inherit;
+      content: "";
+      left: 0;
+      opacity: 0;
+      pointer-events: none;
+      position: absolute;
+      right: 0;
+      top: 0;
+      transition: opacity 0.2s cubic-bezier(0.4, 0, 0.6, 1);
+      background-color: $val;
+    }
   }
 
-  70% {
-    background-color: var(--vp-c-bg-elv);
-    opacity: 1;
-    transform: translateY(-5px);
+  .bg-#{$name}-soft {
+    color: var(--bs-#{$name});
+    background-color: rgba(var(--bs-#{$name}-rgb), .25);
+    filter: contrast(1.5);
   }
+}
 
-  100% {
-    transform: translateY(0px);
+.selectable-glow {
+  cursor: pointer;
+  transition: filter 0.1s linear;
+
+  &:hover {
+    filter: brightness(1.2);
+  }
+}
+
+.selectable-scale {
+  cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+  &:hover {
+    transform: scale(1.075);
   }
 }

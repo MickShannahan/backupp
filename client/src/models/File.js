@@ -16,6 +16,7 @@ export class File {
     this.type = data.type
     this.mimetype = data.type
     this.size = data.size
+    this.url = data.url
     this.thumbnail = data.thumbnail ? new Thumbnail(data.thumbnail) : placeHolderThumbnail(this.type)
     this.folder = data.folder.replace(data.ownerId, '')
     if (this.folder.startsWith('/')) this.folder = this.folder.slice(1)

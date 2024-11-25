@@ -1,5 +1,5 @@
 <script setup>
-import { backupService } from '@/services/backupService.js';
+import { backupService, getFolderDir } from '@/services/backupService.js';
 import Panes from '../components/Panes.vue'
 import {computed, onMounted, watch} from 'vue'
 import { AppState } from '@/AppState.js';
@@ -8,18 +8,12 @@ import { logger } from '@/utils/Logger.js';
 const identity = computed(()=> AppState.identity)
 const activeDir = computed(()=> AppState.activeDir)
 
-async function getAccountFolder(){
-  try {
-    // @ts-ignore
-    await backupService.getFolder()
-  } catch (error) {
-    Pop.error(error)
-  }
-}
 
 watch(activeDir, ()=>{
   if(!activeDir.value) return
+  if( activeDir.value.fetchedExp && activeDir.value.fetchedExp > Date.now())return
   logger.log('active Dir changed', activeDir.value.folderSlug)
+  activeDir.value.fetchedExp = Date.now() + (1000 *60 * 5)
   backupService.getFolder(activeDir.value.folderSlug)
 }, {immediate: true})
 
@@ -27,7 +21,6 @@ watch(activeDir, ()=>{
 
 <template>
  <Panes/>
-
 </template>
 
 <style scoped lang="scss">

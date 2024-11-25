@@ -23,7 +23,7 @@ emitter('selected', file)
         <small>{{( file.size /1024 /1024).toFixed(2) }}mb</small>
       </div>
     </div>
-    <input v-if="selected" :checked="selected" class="select-box" type="checkbox">
+    <span v-if="selected" class="select-box"><i class="mdi mdi-checkbox-marked  fs-5"></i></span>
   </div>
 </template>
 
@@ -52,6 +52,7 @@ emitter('selected', file)
     filter: brightness(1.1);
     transition: filter .15s ease;
     cursor: pointer;
+    box-shadow: 0px 2px 4px rgba(var(--bs-black-rgb), .4);
   }
   .blur-bg{
     position: absolute;
@@ -76,13 +77,21 @@ emitter('selected', file)
     position: absolute;
     top: .25em;
     right: .25em;
-    transform: scale(1.25);
+    font-size: 16px;
+    display: grid;
+    place-content: center;
+  }
+  .mdi-checkbox-marked{
+    background-color: var(--bs-primary);
+    height: 20px;
+    line-height: 19px;
+    border-radius: 3px;
   }
 
   &.selected{
-    outline: 2px solid blueviolet;
+    outline: 2px solid var(--bs-primary);
     outline-offset: -1px;
-    box-shadow: inset 0px 0px 15px rgba(137, 43, 226, 0.5);
+    box-shadow: inset 0px 0px 15px rgba(var(--bs-primary-rgb), 0.5);
   }
 }
 </style>
