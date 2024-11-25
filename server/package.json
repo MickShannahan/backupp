@@ -1,0 +1,33 @@
+{
+  "name": "codeworks-auth-starter",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "debug": "node index.js",
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "setup": "npm install"
+  },
+  "author": "Codeworks",
+  "license": "ISC",
+  "dependencies": {
+    "@azure/storage-blob": "^12.25.0",
+    "@bcwdev/auth0provider": "1.1.0",
+    "blurhash": "^2.0.5",
+    "cors": "2.8.5",
+    "dotenv": "16.4.5",
+    "esm-wallaby": "^3.2.30",
+    "express": "4.19.2",
+    "express-fileupload": "^1.5.1",
+    "express-upload": "^0.1.0",
+    "helmet": "7.1.0",
+    "mongoose": "8.3.1",
+    "sharp": "^0.32.6",
+    "socket.io": "4.7.5"
+  },
+  "devDependencies": {
+    "eslint": "9.0.0",
+    "nodemon": "3.1.0"
+  }
+}
