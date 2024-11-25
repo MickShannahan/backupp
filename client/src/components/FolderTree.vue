@@ -28,12 +28,12 @@ async function preFetchFolder(){
 <section class="folder-indent d-flex flex-column">
     <button @mouseenter="preFetchFolder" @click="openFolder()" class="btn selectable-primary d-flex text-start" :class="{active}">
       <i v-if="level > 0" class="tree-line"></i>
-      <i v-if="!open" class="mdi mdi-folder me-1"></i>
-      <i v-else class="mdi mdi-folder-open me-1"></i>
+      <i v-if="!open" class="mdi mdi-folder me-1 text-blue"></i>
+      <i v-else class="mdi mdi-folder-open me-1 text-blue"></i>
       {{ folder.name || '/' }}
       <small>
-        <span v-if="folder.fileCount">{{ folder.fileCount }}<i class="mdi mdi-file-multiple"></i></span>
-        <span v-if="folder.folderCount">{{ folder.folderCount }}<i class="mdi mdi-folder-multiple"></i></span>
+        <span v-if="folder.fileCount">{{ folder.fileCount }}<i class="mdi mdi-file-multiple text-teal text-opacity-50"></i></span>
+        <span v-if="folder.folderCount">{{ folder.folderCount }}<i class="mdi mdi-folder-multiple text-blue text-opacity-50"></i></span>
       </small>
     </button>
     <section v-if="open">

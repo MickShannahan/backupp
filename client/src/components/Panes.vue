@@ -1,6 +1,6 @@
 <script setup>
 import { AppState } from '@/AppState.js';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import FileCard from './FileCard.vue';
 import { backupService } from '@/services/backupService.js';
 import Pop from '@/utils/Pop.js';
@@ -19,6 +19,8 @@ const activeDir = computed(()=> AppState.activeDir)
 const folders = computed(()=> AppState.activeDir?._folders)
 const files = computed(()=>AppState.activeDir?._files
 )
+
+watch(activeDir, ()=> selectedFiles.value.length = 0)
 
 function handleKey(e){
   console.log(e)
@@ -135,7 +137,11 @@ async function downloadSelection(){
         </FileDropZone>
     <!-- SECTION options -->
     <section >
-        <Options :show="selectedFiles.length > 0"></Options>
+        <Options :show="selectedFiles.length > 0" :selection="selectedFiles"
+          @delete="deleteFiles"
+          @selectAll="selectAll"
+          @download="downloadSelection"
+          ></Options>
     </section>
   </div>
 </div>
@@ -146,7 +152,7 @@ async function downloadSelection(){
 </template>
 
 
-<style lang="scss" scoped>
+<style lang="scss">
 
 .panes{
   display: grid;
@@ -172,7 +178,7 @@ async function downloadSelection(){
   display: grid;
   grid-template-columns: repeat( auto-fit, minmax(var(--files-width), 1fr));
   gap: 10px;
-  .file-container{
+  .file-container {
     container-type: inline-size;
   }
 }
@@ -215,14 +221,12 @@ async function downloadSelection(){
 }
 .list-leave-to {
   opacity: 0;
-  transform: translateY(-20px);
 }
 
 /* ensure leaving items are taken out of layout flow so that moving
    animations can be calculated correctly. */
 .list-leave-active {
   position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+  transform: translateY(-50%);
 }
 </style>
