@@ -29,8 +29,8 @@ class FilesService {
     coldBackUp.metadata.height = height
     const largestDimension = orientation % 2 ? 'width' : 'height'
     const hotResize = await sharpData
-      .resize({ [largestDimension]: 500, withoutEnlargement: true, kernel: "lanczos3" })
-    const hotThumbnail = sharpService.toWebp(hotResize, { quality: 85 })
+      .resize({ [largestDimension]: 350, withoutEnlargement: true, kernel: "lanczos3" })
+    const hotThumbnail = sharpService.toWebp(hotResize, { quality: 80 })
     const hotData = await hotThumbnail.toBuffer()
     const hotSharp = sharpService.fileToSharp(hotData)
     const hotMeta = await hotSharp.metadata()
