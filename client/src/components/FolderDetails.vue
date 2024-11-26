@@ -5,6 +5,9 @@ import AddFolderForm from './AddFolderForm.vue';
 import ModalWrapper from './ModalWrapper.vue';
 import { backupService } from '@/services/backupService.js';
 import { byteSize } from '@/utils/Converters.js';
+import FilesSearch from './FilesSearch.vue';
+
+defineEmits(['search'])
 
 const activeDir = computed(()=> AppState.activeDir)
 const dirSize = computed(()=> {
@@ -36,7 +39,7 @@ const hotCost = computed(()=>{
 
 
 <template>
-    <div v-if="activeDir" class="container-fluid sticky-top">
+    <div v-if="activeDir" class="container-fluid sticky-top ">
       <div class="bg-glass border rounded d-flex justify-content-between align-items-center p-2">
         <section>
           <div class="fs-5 fw-bold">{{ activeDir.name || 'base' }}</div>
@@ -46,6 +49,7 @@ const hotCost = computed(()=>{
             <span class="rounded-pill bg-green-soft px-2" :title="`+ an additional ${hotCost} for previews`">$ {{ dirCost }}</span>
           </small>
         </section>
+          <FilesSearch @search="(em)=>$emit('search', em)"  />
         <section class="d-flex">
           <button data-bs-toggle="modal" data-bs-target="#create-folder-form" class="btn selectable"><i class="mdi mdi-plus"></i><i class="mdi mdi-folder-outline"></i>
           </button>

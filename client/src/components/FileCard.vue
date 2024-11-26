@@ -2,6 +2,8 @@
 import { ref } from 'vue';
 import {File} from '../models/File.js'
 
+const loaded = ref(false)
+
 const {file, selected} = defineProps({file: File, selected: Boolean})
 const emitter = defineEmits(['selected'])
 
@@ -13,8 +15,8 @@ emitter('selected', file)
 
 
 <template>
-<div @click="selectFile" class="card file-card" :class="{selected}">
-    <img loading="lazy" class="blur-bg" :src="file.thumbnail?.url" alt="">
+<div @click="selectFile" class="card" :class="{selected, 'file-card': loaded}">
+    <img @load="loaded = true" loading="lazy" class="blur-bg" :src="file.thumbnail?.url" alt="">
     <img :width="file?.width" :height="file?.height" loading="lazy" :src="file.thumbnail?.url" alt="">
     <div class="card-body">
       <div>{{ file.name }}</div>
@@ -42,12 +44,17 @@ emitter('selected', file)
   }
 }
 
+.card.file-card{
+  animation: show-card .3s ease forwards;
+}
+
 .card{
   height: 100%;
   width: 100%;
   overflow: hidden;
   border: 1px solid rgba(128, 128, 128, 0.2);
   font-size: 14px;
+  opacity: .25;
   &:hover{
     filter: brightness(1.1);
     transition: filter .15s ease;
@@ -71,7 +78,7 @@ emitter('selected', file)
     height: calc(var(--files-width) * .55);
     position: relative;
     user-select: none;
-  }
+}
 
   .select-box{
     position: absolute;
@@ -93,5 +100,16 @@ emitter('selected', file)
     outline-offset: -1px;
     box-shadow: inset 0px 0px 15px rgba(var(--bs-primary-rgb), 0.5);
   }
+}
+
+@keyframes show-card{
+  from{
+    opacity: .25;
+    transform: translateY(10px);
+  }
+to{
+  opacity: 1;
+  transform: translateY(0px);
+}
 }
 </style>

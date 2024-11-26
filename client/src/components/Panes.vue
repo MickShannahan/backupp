@@ -17,18 +17,23 @@ onMounted(()=> AppState.activeDir = AppState.backup)
 const tree = computed(()=> AppState.backup._folders)
 const activeDir = computed(()=> AppState.activeDir)
 const folders = computed(()=> AppState.activeDir?._folders)
-const files = computed(()=>AppState.activeDir?._files
-)
+const filterBy = ref('')
+const files = computed(()=>{
+  if(filterBy.value == '')return  AppState.activeDir?._files
+  const rx = new RegExp(filterBy.value,'ig')
+  return AppState.activeDir?._files.filter(f => rx.test(f.name))
+})
 
 watch(activeDir, ()=> selectedFiles.value.length = 0)
 
 function handleKey(e){
-  console.log(e)
+  // logger.log(e)
   switch(e.key){
     case 'Delete':
       deleteFiles()
       break
     case 'Enter' :
+      if(!e.altKey) break
       downloadSelection()
       break
     case 'a':
@@ -83,7 +88,11 @@ function selectAll(){
     if(selected.includes(card)) return
     selected.push(card)
   })
-  
+}
+
+function filterFiles(filter){
+  logger.log('filtering', filter)
+  filterBy.value = filter
 }
 
 async function deleteFiles(){
@@ -115,7 +124,7 @@ async function downloadSelection(){
 
 
 <template>
-  <FolderDetails/>
+  <FolderDetails @search="filterFiles"/>
   <div class="container-fluid">
 
     <div class="panes my-2">
@@ -128,8 +137,8 @@ async function downloadSelection(){
       <!-- SECTION main view -->
       <FileDropZone :folder="AppState.activeDir?.folderSlug ?? ''">
           <section class="files-grid">
-            <TransitionGroup name="list">
-              <div v-for="file in files" :key="file.name" class="file-container">
+            <TransitionGroup  :css="files.length < 50">
+              <div v-for="(file, i) in files" :data-index="i" :key="file.name" class="file-container">
                 <FileCard :file @selected="toggleFileSelection" :selected="selectedFiles.includes(file)"/>
               </div>
             </TransitionGroup>
@@ -179,7 +188,7 @@ async function downloadSelection(){
   grid-template-columns: repeat( auto-fit, minmax(var(--files-width), 1fr));
   gap: 10px;
   .file-container {
-    container-type: inline-size;
+    // container-type: inline-size;
   }
 }
 
@@ -212,12 +221,12 @@ async function downloadSelection(){
 .list-move, /* apply transition to moving elements */
 .list-enter-active,
 .list-leave-active {
-  transition: all 0.3s ease;
+  transition: all 0.3s calc(attr(data-index) * .1s) ease;
 }
 
 .list-enter-from{
   opacity: 0;
-  transform: translateY(20px);
+  transform: translateY(10px);
 }
 .list-leave-to {
   opacity: 0;
@@ -225,8 +234,8 @@ async function downloadSelection(){
 
 /* ensure leaving items are taken out of layout flow so that moving
    animations can be calculated correctly. */
-.list-leave-active {
-  position: absolute;
-  transform: translateY(-50%);
-}
+// .list-leave-active {
+//   position: absolute;
+//   transform: translateY(-50%);
+// }
 </style>
