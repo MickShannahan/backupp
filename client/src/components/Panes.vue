@@ -137,7 +137,7 @@ async function downloadSelection(){
       <!-- SECTION main view -->
       <FileDropZone :folder="AppState.activeDir?.folderSlug ?? ''">
           <section class="files-grid">
-            <TransitionGroup  :css="files.length < 50">
+            <TransitionGroup  :css="files?.length < 50">
               <div v-for="(file, i) in files" :data-index="i" :key="file.name" class="file-container">
                 <FileCard :file @selected="toggleFileSelection" :selected="selectedFiles.includes(file)"/>
               </div>

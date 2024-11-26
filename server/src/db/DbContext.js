@@ -1,5 +1,5 @@
 import mongoose from 'mongoose'
-import { AccountSchema } from '../models/Account'
+import { AccountSchema } from '../models/Account.js'
 import { folderSchema } from '../models/folder.js'
 import { fileSchema } from '../models/file.js'
 

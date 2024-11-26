@@ -1,6 +1,6 @@
 import { Server, Socket } from 'socket.io'
-import { attachHandlers } from '../Setup'
-import { logger } from './utils/Logger'
+import { attachHandlers } from '../Setup.js'
+import { logger } from './utils/Logger.js'
 
 const SOCKET_EVENTS = {
   connection: 'connection',
@@ -32,8 +32,8 @@ class SocketProvider {
   }
 
   /**
-   * 
-   * @param {Socket} socket 
+   *
+   * @param {Socket} socket
    */
   onConnect(socket) {
     try {

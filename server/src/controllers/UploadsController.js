@@ -5,6 +5,7 @@ import { filesService } from "../services/FilesService.js";
 import { BadRequest } from "../utils/Errors.js";
 import { FileDTO } from "../models/file.js";
 import { foldersService } from "../services/FoldersService.js";
+import { workersService } from "../services/WorkerService.js";
 
 
 
@@ -63,13 +64,15 @@ export class UploadsController extends BaseController {
     try {
       if (!req.files || Object.keys(req.files).length == 0) throw new BadRequest("No File attached")
       const user = req.userInfo
-      req.body.ownerId = user.id
       const file = new FileDTO(req.files.upload)
-      const container = req.body.container
       const folder = `${user.id}${req.body.folderSlug ? `/${req.body.folderSlug}` : ''}`
-      const payload = await handleFileForUpload(file, { container, folder })
-      const fileRef = await filesService.createFileRecord({ ...payload, ownerId: user.id, folder })
-      res.send(fileRef)
+      file.ownerId = user.id
+      file.folder = folder
+      const Q = workersService.addJobToQ(file)
+      const payload = { fileName: file.fileName, currentQ: Q.currentQ }
+      res.send(payload)
+      // const payload = await handleFileForUpload(file, { container, folder })
+      // const fileRef = await filesService.createFileRecord({ ...payload, ownerId: user.id, folder })
     } catch (error) {
       next(error)
     }
@@ -97,12 +100,3 @@ export class UploadsController extends BaseController {
   }
 }
 
-
-async function handleFileForUpload(file, { container, folder }) {
-  if (file.mimetype.includes('image')) {
-    const { hotBackup, coldBackUp } = await filesService.uploadImage(file, { folder })
-    coldBackUp.thumbnail = hotBackup
-    return coldBackUp
-  }
-  return await filesService.uploadFile(file, { container, folder, temp: 'cold' })
-}

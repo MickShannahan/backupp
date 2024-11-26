@@ -3,8 +3,8 @@ import { json } from 'body-parser'
 import cors from 'cors'
 import express from 'express'
 import helmet from 'helmet'
-import { Paths, RegisterControllers, RegisterSocketHandlers, UseStaticPages } from '../Setup'
-import { logger } from './utils/Logger'
+import { Paths, RegisterControllers, RegisterSocketHandlers, UseStaticPages } from '../Setup.js'
+import { logger } from './utils/Logger.js'
 
 export class Startup {
   static ConfigureGlobalMiddleware(app) {

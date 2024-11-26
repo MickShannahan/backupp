@@ -1,9 +1,9 @@
 import express from 'express'
 import { createServer } from 'http'
-import { socketProvider } from './SocketProvider'
-import { Startup } from './Startup'
-import { DbConnection } from './db/DbConfig'
-import { logger } from './utils/Logger'
+import { socketProvider } from './SocketProvider.js'
+import { Startup } from './Startup.js'
+import { DbConnection } from './db/DbConfig.js'
+import { logger } from './utils/Logger.js'
 
 // create server & socketServer
 const app = express()

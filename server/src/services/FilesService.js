@@ -1,10 +1,9 @@
-import { kernel } from "sharp"
 import { FileDTO } from "../models/file.js"
 import { azBlobService } from "./AzureBlobService.js"
 import { sharpService } from "./SharpService.js"
 import { dbContext } from "../db/DbContext.js"
 import { Forbidden } from "../utils/Errors.js"
-
+import { logger } from "../utils/Logger.js"
 
 class FilesService {
 
@@ -18,10 +17,9 @@ class FilesService {
   }
   /**
    * @param {FileDTO} file
-   * @param {*} options
    */
-  async uploadImage(file, { folder, container }) {
-    const coldBackUp = await this.uploadFile(file, { temp: 'cold', folder })
+  async uploadImage(file) {
+    const coldBackUp = await this.uploadToAz(file, { temp: 'cold', folder: file.folder })
     const sharpData = sharpService.fileToSharp(file.data, file.size)
     const { height, width, orientation } = await sharpData.metadata()
     coldBackUp.metadata ??= {}
@@ -44,19 +42,30 @@ class FilesService {
       size: hotData.length,
       metadata: { width: hotMeta.width, height: hotMeta.height, orientation }
     })
-    const hotBackup = await this.uploadFile(hotFile, { folder })
-    // console.log('🧊', coldBackUp)
-    // console.log('🔥', hotBackup)
-    return { coldBackUp, hotBackup }
+    const hotBackup = await this.uploadToAz(hotFile, { folder: file.folder, temp: 'hot' })
+    const fileRecord = { ...coldBackUp, thumbnail: hotBackup }
+    // return await this.createFileRecord(fileRecord)
+    return fileRecord
+  }
+
+  /**
+* @param {FileDTO} file
+* @returns
+*/
+  async uploadMiscFile(file) {
+    const fileData = await this.uploadToAz(file, { folder: file.folder, temp: 'cold' })
+    return fileData
   }
   /**
    * @param {FileDTO} file
    * @param {{user?, container?: string, folder?: string, temp?: string}} options
    * @returns
    */
-  async uploadFile(file, { container, folder, temp }) {
+  async uploadToAz(file, { container, folder, temp }) {
     const upload = await azBlobService.uploadFile(file, { folder, temp })
-    return {
+    const fileData = {
+      ownerId: file.ownerId,
+      folder: folder,
       url: upload.url,
       name: file.name,
       size: file.size,
@@ -64,7 +73,10 @@ class FilesService {
       mb: file.mb,
       metadata: file.metadata
     }
+    return fileData
   }
+
+
 
   async deleteFile(userId, fileId) {
     const fileToDelete = await dbContext.Files.findById(fileId)
