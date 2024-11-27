@@ -5,13 +5,13 @@ FROM --platform=linux/amd64 node:20-slim AS client-builder
 WORKDIR /app/client
 
 # Copy the client-side package.json and package-lock.json to the client builder container
-COPY ./client/package*.json ./
+COPY client/package*.json .
 
 # Install client application dependencies
 RUN npm install
 
 # Copy the client application source code to the client builder container
-COPY ./client ./
+COPY client .
 
 # Build the client-side code
 RUN npm run build
@@ -23,13 +23,13 @@ FROM node:20-slim
 WORKDIR /app/server
 
 # Copy the server-side package.json and package-lock.json to the server container
-COPY ./server/package*.json ./
+COPY server/package*.json .
 
 # Install server application dependencies
 RUN npm install
 
 # Copy the server application source code to the server container
-COPY ./server ./
+COPY server .
 
 # Copy the built client files from the client builder container to the server's www directory
 COPY --from=client-builder /app/client/docs /app/server/www
@@ -38,4 +38,4 @@ COPY --from=client-builder /app/client/docs /app/server/www
 EXPOSE 3000
 
 # Define the command to start your Node.js application
-CMD ["node", "index.js"]
+CMD [ "node", "index.js" ]
