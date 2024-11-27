@@ -35,7 +35,7 @@ async function preFetchFolder(){
       <i v-else class="mdi mdi-folder-open me-1 text-blue"></i>
       {{ folder.name || '/' }}
       <small>
-        <span v-if="folder.fileCount">{{ Intl.NumberFormat('en-us').format(folder.fileCount) }}<i class="mdi mdi-file-multiple text-teal text-opacity-50"></i></span>
+        <span v-if="folder.fileCount || isBase">{{ Intl.NumberFormat('en-us').format(isBase ?folder._files.length : folder.fileCount) }}<i class="mdi mdi-file-multiple text-teal text-opacity-50"></i></span>
         <span v-if="folder.folderCount">{{ folder.folderCount }}<i class="mdi mdi-folder-multiple text-blue text-opacity-50"></i></span>
       </small>
     </button>
