@@ -148,7 +148,7 @@ function clearQueue(){
       <small class="w-100 text-center">{{ progressCurrent }} / {{ progressMax }} <span class="px-2 bg-teal-soft rounded"><i class="mdi mdi-timer"></i>{{ time }}s</span></small>
     </div>
     <div v-else class="row align-items-center">
-      <small v-if="errorLogs.length" class="w-100 text-danger">
+      <small v-if="errorLogs.length" class="w-100 text-danger error-log">
         <div v-for="elog in errorLogs" :key="elog.file?.id">
           {{ elog.file.name }}
           <div class="ms-2">
@@ -224,6 +224,11 @@ function clearQueue(){
     min-width: 12%;
   }
 
+
+  .error-log{
+    max-height: 10em;
+    overflow-y: auto
+  }
 }
 
 @keyframes loading-animation {

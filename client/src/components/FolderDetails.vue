@@ -62,7 +62,7 @@ async function importFiles(input){
 
 <template>
     <div v-if="activeDir" class="container-fluid sticky-top ">
-      <div class="bg-glass border rounded d-flex justify-content-between align-items-center p-2">
+      <div class="bg-glass border-0 border rounded d-flex justify-content-between align-items-center p-2">
         <section>
           <div class="fs-5 fw-bold">{{ activeDir.name || 'base' }}</div>
           <small class="d-flex gap-2">

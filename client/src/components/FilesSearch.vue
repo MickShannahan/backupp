@@ -12,7 +12,7 @@ function search(){
 <template>
   <section >
     <div class="form-floating">
-      <input @change="search" v-model="searchTerm" class="bg-dark bg-opacity-25 form-control" type="text"  id="floatingInput" placeholder="name@example.com">
+      <input @change="search" v-model="searchTerm" class="border-0 form-control" type="text"  id="floatingInput" placeholder="name@example.com">
       <label for="floatingInput">Search</label>
       <kbd class="text-light bg-black bg-opacity-20">ctrl+k</kbd>
     </div>
@@ -25,6 +25,11 @@ section{
   display: grid;
   place-content: center;
 }
+
+input{
+  background-color: rgba(var(--bs-black-rgb), .1);
+}
+
 .form-floating{
   position: relative;
 

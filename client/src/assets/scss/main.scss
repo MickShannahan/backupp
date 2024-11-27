@@ -45,6 +45,10 @@
 @import "bootstrap/scss/placeholders";
 @import "bootstrap/scss/helpers";
 
+body {
+  overflow-x: hidden;
+}
+
 .bg-glass {
   background: rgba(var(--bs-black-rgb), .2);
   backdrop-filter: blur(10px);

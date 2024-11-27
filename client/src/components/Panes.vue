@@ -9,6 +9,8 @@ import { logger } from '@/utils/Logger.js';
 import FolderTree from './FolderTree.vue';
 import FolderDetails from './FolderDetails.vue';
 import Options from './Options.vue';
+import FolderCard from './FolderCard.vue';
+import {File} from '../models/File.js'
 
 onMounted(()=> window.addEventListener('keydown', handleKey))
 onMounted(()=> window.addEventListener('keyup', clearKey))
@@ -19,9 +21,9 @@ const activeDir = computed(()=> AppState.activeDir)
 const folders = computed(()=> AppState.activeDir?._folders)
 const filterBy = ref('')
 const files = computed(()=>{
-  if(filterBy.value == '')return  AppState.activeDir?._files
+  if(filterBy.value == '')return  sortItemsBy(AppState.activeDir?._files)
   const rx = new RegExp(filterBy.value,'ig')
-  return AppState.activeDir?._files.filter(f => rx.test(f.name))
+  return sortItemsBy(AppState.activeDir?._files.filter(f => rx.test(f.name)))
 })
 
 watch(activeDir, ()=> selectedFiles.value.length = 0)
@@ -127,7 +129,7 @@ const cardDirection = ref('column')
 function changeLayout(layout){
 switch(layout){
   case 'list':
-    gridSize.value = '700px'
+    gridSize.value = '100%'
     imageSize.value = '80px'
     cardDirection.value = 'row'
     break
@@ -158,6 +160,28 @@ switch(layout){
 }
 }
 
+const sortBy = ref('new-old')
+/**
+ * @param {File[]} items 
+ */
+function sortItemsBy(items){
+  let copy = [...items]
+  switch(sortBy.value){
+    case 'new-old': copy.sort((a,b)=> b.createdAt.getTime() - a.createdAt.getTime())
+    break
+    case 'old-new' : copy.sort((a,b)=> a.createdAt.getTime() - b.createdAt.getTime())
+    break
+    case 'lg-sm' : copy.sort((a,b)=> b.size - a.size)
+    break
+    case 'sm-lg' : copy.sort((a,b)=> a.size - b.size)
+    break
+    case 'a-z' : copy.sort((a,b)=>  a.name.localeCompare(b.name))
+    break
+    case 'z-a' : copy.sort((a,b)=> b.name.localeCompare(a.name))
+  }
+  return copy
+}
+
 </script>
 
 
@@ -173,6 +197,13 @@ switch(layout){
         </section>
       <!-- SECTION main view -->
       <FileDropZone :folder="AppState.activeDir?.folderSlug ?? ''">
+        <section class="folder-grid">
+          <TransitionGroup name="list">
+            <div v-for="folder in folders" :key="folder.id">
+              <FolderCard :folder="folder"/>
+            </div>
+          </TransitionGroup>
+        </section>
           <section v-if="files?.length < 65" class="files-grid">
             <TransitionGroup name="list" >
               <div v-for="file in files"  :key="file.name" class="file-container">
@@ -194,6 +225,7 @@ switch(layout){
           @selectAll="selectAll"
           @download="downloadSelection"
           @changeLayout="changeLayout"
+          @sortBy="(type)=> sortBy = type"
           ></Options>
         </div>
     </section>
@@ -209,6 +241,9 @@ switch(layout){
 <style lang="scss">
 
 .panes{
+  --files-width: v-bind(gridSize);
+  --image-size: v-bind(imageSize);
+  --card-direction: v-bind(cardDirection);
   flex-grow: 1;
   display: grid;
   grid-template-columns: var(--left-pane-size) 1fr 60px;
@@ -229,10 +264,16 @@ switch(layout){
   }
 }
 
+.folder-grid{
+  display: grid;
+  grid-template-columns: repeat( auto-fit, minmax(var(--files-width), 1fr));
+  gap: 10px;
+  margin-top: -75px;
+  padding-top: 75px;
+  margin-bottom: .5em;
+}
+
 .files-grid{
-  --files-width: v-bind(gridSize);
-  --image-size: v-bind(imageSize);
-  --card-direction: v-bind(cardDirection);
   margin-top: -75px;
   padding-top: 75px;
   display: grid;

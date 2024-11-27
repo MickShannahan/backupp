@@ -31,7 +31,7 @@ async function preFetchFolder(){
   <FileDropZone :folder="folder.folderSlug">
     <button @mouseenter="preFetchFolder" @click="openFolder()" class="btn selectable-primary d-flex text-start" :class="{active}">
       <i v-if="level > 0" class="tree-line"></i>
-      <i v-if="!open" class="mdi mdi-folder me-1 text-blue"></i>
+      <i v-if="!open && !active" class="mdi mdi-folder me-1 text-blue"></i>
       <i v-else class="mdi mdi-folder-open me-1 text-blue"></i>
       {{ folder.name || '/' }}
       <small>
@@ -39,7 +39,7 @@ async function preFetchFolder(){
         <span v-if="folder.folderCount">{{ folder.folderCount }}<i class="mdi mdi-folder-multiple text-blue text-opacity-50"></i></span>
       </small>
     </button>
-    <section v-if="open">
+    <section v-if="open || active">
       <FolderTree v-for="(childD, childN) in folder._folders" :folder="childD" :level="level +1" :key="childN"/>
     </section>
   </FileDropZone>
