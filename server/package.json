@@ -2,11 +2,12 @@
   "name": "codeworks-auth-starter",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "index.cjs",
+  "type": "module",
   "scripts": {
-    "debug": "node index.js",
-    "start": "node index.js",
-    "dev": "nodemon index.js",
+    "debug": "node index.cjs",
+    "start": "node index.cjs",
+    "dev": "nodemon index.cjs",
     "setup": "npm install"
   },
   "author": "Codeworks",

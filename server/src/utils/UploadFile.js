@@ -1,7 +1,6 @@
 // const { parentPort, threadId, isMainThread } = require('worker_threads')
+// const { filesService } = require('../services/FilesService.js')
 // const { logger } = require('./Logger.js')
-// const { azBlobService } = require('../services/AzureBlobService.js')
-// const { FileDTO } = require('../models/file.js')
 
 import { threadId, parentPort, isMainThread } from "worker_threads"
 import { FileDTO } from "../models/file.js"
@@ -17,7 +16,6 @@ const worker = workerName + '-' + workerId
 
 async function init() {
   parentPort.on('message', async ({ action, data }) => {
-    // logger.log(`${worker} got job ${JSON.stringify(action)}`)
     switch (action) {
       case 'uploadImage':
         await uploadImage(data)
@@ -35,9 +33,7 @@ function readyForWork() {
   parentPort.postMessage({ status: 'ready', workerId })
 }
 
-/**
- * @param {FileDTO} file
- */
+
 async function uploadImage(file) {
   try {
     const payload = await filesService.uploadImage(file)

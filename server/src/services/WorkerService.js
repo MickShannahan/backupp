@@ -1,7 +1,6 @@
 import { Worker } from 'node:worker_threads'
 import { FileDTO } from '../models/file.js'
 import { logger } from '../utils/Logger.js'
-import path from 'path'
 import { filesService } from './FilesService.js'
 import { socketProvider } from '../SocketProvider.js'
 
@@ -30,7 +29,7 @@ export const workersService = new WorkersService()
 
 export function startWork() {
   if (workers.length < workerLimit && workers.length <= Math.round(jobQ.length / 5)) {
-    const worker = new Worker('./src/utils/UploadFile.mjs')
+    const worker = new Worker('./src/utils/UploadFile.js')
     workers.push(worker)
     worker.on('message', doJob)
     worker.on('error', workerError)
