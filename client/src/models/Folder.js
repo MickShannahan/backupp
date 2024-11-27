@@ -20,8 +20,8 @@ export class Folder {
      */
     this._files = data._files ?? []
     this._folders = data._folders ?? {}
-    this.fileCount = data.fileCount ?? this._files.length
-    this.folderCount = data.folderCount ?? this._folders.length
+    this._fileCount = data.fileCount ?? this._files.length
+    this._folderCount = data.folderCount ?? this._folders.length
     this.fetchedExp = 0
   }
 
@@ -31,5 +31,13 @@ export class Folder {
 
   setExp(minutes = 6) {
     this.fetchedExp = Date.now() * (1000 * 60 * minutes)
+  }
+
+  get fileCount() {
+    return this._fileCount || this._files.length
+  }
+
+  get folderCount() {
+    return this._folderCount || this._folders.length
   }
 }

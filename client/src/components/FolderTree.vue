@@ -7,6 +7,7 @@ import FileDropZone from './FileDropZone.vue';
 
 const {folder, level, alwaysOpen} = defineProps({folder: {type: Folder}, level: {type: Number, default: 0}, alwaysOpen: {type: Boolean, default: false}})
 const active = computed(()=> AppState.activeDir == folder)
+const isBase = folder.name == ''
 
 const folderIndent = computed(()=> (level * 10)  + 'px')
 const open = ref(alwaysOpen)

@@ -38,9 +38,9 @@ function handleDrop(e){
     left: 0;
     width: 100%;
     height: 100%;
-    outline: 2px dashed var(--bs-primary);
+    outline: 2px dashed rgba(var(--bs-primary-rgb) 0.6);
     outline-offset: -2px;
-    background-color: rgba(137, 43, 226, 0.2);
+    background-color: rgba(var(--bs-primary-rgb) 0.2);
     content: '';
     border-radius: 4px;
   }

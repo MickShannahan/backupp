@@ -29,7 +29,7 @@ function toggleTheme() {
   </button>
   <small>
     <div title="Total account storage size" class="bg-primary-soft px-2 mb-1 rounded-pill">{{accountSize}}</div>
-    <div title="Total account storage spending" class="bg-green-soft px-2 rounded-pill">${{(parseInt(accountSize)* AppState.coldPriceUSD)}}</div>
+    <div title="Total account storage spending" class="bg-green-soft px-2 rounded-pill">${{((AppState.accountBytes/1024/1024/1024)* AppState.coldPriceUSD).toFixed(5)}}</div>
   </small>
 </aside>
 </template>

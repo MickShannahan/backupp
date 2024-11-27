@@ -15,7 +15,9 @@ export const AppState = reactive({
   backup: new Folder({
     id: 'base',
     name: '',
-    folder: ''
+    folder: '',
+    folderCount: 0,
+    fileCount: 0
   }),
   /** @type {Folder} */
   activeDir: null,

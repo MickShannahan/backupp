@@ -1,12 +1,10 @@
 <script setup>
-import { backupService, getFolderDir } from '@/services/backupService.js';
+import { backupService } from '@/services/backupService.js';
 import Panes from '../components/Panes.vue'
 import {computed, onMounted, watch} from 'vue'
 import { AppState } from '@/AppState.js';
 import Pop from '@/utils/Pop.js';
 import { logger } from '@/utils/Logger.js';
-import { sockets } from '@/handlers/BackupHandler.js';
-const identity = computed(()=> AppState.identity)
 const activeDir = computed(()=> AppState.activeDir)
 
 watch(activeDir, ()=>{
@@ -17,15 +15,13 @@ watch(activeDir, ()=>{
 }, {immediate: true})
 
 onMounted(()=>{
-  // @ts-ignore
-  // sockets.emit('JOIN_ROOM', AppState.identity.id)
   getAccountData()
 })
 
 async function getAccountData(){
   try {
     const data =  await backupService.getFolderData()
-    AppState.accountBytes = data[0].totalSize
+    AppState.accountBytes = data[0]?.totalSize ?? 0
   } catch (error) {
     logger.error(error)
     Pop.error(error)
