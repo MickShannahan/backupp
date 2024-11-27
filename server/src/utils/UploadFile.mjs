@@ -4,7 +4,6 @@
 // const { FileDTO } = require('../models/file.js')
 
 import { threadId, parentPort, isMainThread } from "worker_threads"
-import { logger } from "./Logger.js"
 import { FileDTO } from "../models/file.js"
 import { filesService } from "../services/FilesService.js"
 
