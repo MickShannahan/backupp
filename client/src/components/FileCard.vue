@@ -80,7 +80,6 @@ emitter('selected', file)
     width:  auto;
     min-width: 20%;
     max-width: 100%;
-    margin: auto;
     object-fit: contain;
     object-position: center;
     position: relative;

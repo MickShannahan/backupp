@@ -163,8 +163,7 @@ switch(layout){
 
 <template>
   <FolderDetails @search="filterFiles"/>
-  <div class="container-fluid py-2">
-
+  <div class="container-fluid py-2 d-flex flex-column flex-grow-1">
     <div class="panes my-2">
       <!-- SECTION trunk -->
       <section class="d-flex flex-column">
@@ -174,12 +173,17 @@ switch(layout){
         </section>
       <!-- SECTION main view -->
       <FileDropZone :folder="AppState.activeDir?.folderSlug ?? ''">
-          <section class="files-grid">
-            <TransitionGroup  :css="files?.length < 50">
-              <div v-for="(file, i) in files" :data-index="i" :key="file.name" class="file-container">
+          <section v-if="files?.length < 65" class="files-grid">
+            <TransitionGroup name="list" >
+              <div v-for="file in files"  :key="file.name" class="file-container">
                 <FileCard :file @selected="toggleFileSelection" :selected="selectedFiles.includes(file)"/>
               </div>
             </TransitionGroup>
+          </section>
+          <section v-else class="files-grid">
+              <div v-for="file in files" :key="file.id" class="file-container">
+                <FileCard :file @selected="toggleFileSelection" :selected="selectedFiles.includes(file)"/>
+              </div>
           </section>
         </FileDropZone>
     <!-- SECTION options -->
@@ -205,10 +209,10 @@ switch(layout){
 <style lang="scss">
 
 .panes{
+  flex-grow: 1;
   display: grid;
   grid-template-columns: var(--left-pane-size) 1fr 60px;
   grid-template-rows: 1fr;
-  min-height: 100dvh;
   &>section{
     padding: 0 .35em;
     overflow: visible;
@@ -266,23 +270,24 @@ switch(layout){
 }
 
 .list-move, /* apply transition to moving elements */
-.list-enter-active,
+.list-enter-active{
+  transition: all 0.3s ease;
+}
 .list-leave-active {
-  transition: all 0.3s calc(attr(data-index) * .1s) ease;
+  // transition: all 0.2s ease;
 }
 
-.list-enter-from{
-  opacity: 0;
-  transform: translateY(10px);
-}
+.list-enter-from,
 .list-leave-to {
   opacity: 0;
+  transform: translateY(10px);
 }
 
 /* ensure leaving items are taken out of layout flow so that moving
    animations can be calculated correctly. */
-// .list-leave-active {
-//   position: absolute;
-//   transform: translateY(-50%);
-// }
+.list-leave-active {
+  position: absolute;
+  opacity: 0;
+  transform: translate(-50%, 50%);
+}
 </style>

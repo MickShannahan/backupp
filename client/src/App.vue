@@ -21,6 +21,12 @@ import { AppState } from './AppState.js';
   --left-pane-size: 250px;
 }
 
+main{
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column
+}
+
 footer {
   position: fixed;
   bottom: 0.5em;
