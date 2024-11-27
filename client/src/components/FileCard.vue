@@ -19,6 +19,7 @@ emitter('selected', file)
     <img @load="loaded = true" loading="lazy" class="blur-bg" :src="file.thumbnail?.url" alt="">
     <img :width="file?.width" :height="file?.height" loading="lazy" :src="file.thumbnail?.url" alt="">
     <div class="card-body">
+      <!-- <div>{{ file.nameClean }}<span class="rounded-pill" :class="`text-${file.color}`">{{ file.extension }}</span></div> -->
       <div>{{ file.name }}</div>
       <div>
         <small>{{ file.dateShort }}</small> <i class="mdi mdi-circle-small"></i>
@@ -55,7 +56,7 @@ emitter('selected', file)
   height: 100%;
   width: 100%;
   overflow: hidden;
-  border: 1px solid rgba(128, 128, 128, 0.2);
+  border: 0;
   font-size: 14px;
   opacity: .25;
   &:hover{
@@ -66,14 +67,15 @@ emitter('selected', file)
   }
   .blur-bg{
     position: absolute;
+    background-color: rgba(var(--bs-light-rgb),.1);
     width: 110%;
     height: 110%;
     left: -5%;
     top: -5%;
     object-fit: cover;
     object-position: center;
-    filter: blur(30px) brightness(.7) contrast(.8);
-    opacity: .6;
+    filter: blur(30px) contrast(.8);
+    opacity: .3;
   }
   img{
     height: var(--image-size);
@@ -84,6 +86,13 @@ emitter('selected', file)
     object-position: center;
     position: relative;
     user-select: none;
+}
+
+.card-body{
+  word-break: break-all;
+  span{
+    word-break: keep-all;
+  }
 }
 
   .select-box{

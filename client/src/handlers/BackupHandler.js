@@ -38,7 +38,6 @@ class BackupHandler extends SocketHandler {
     const file = new File(payload)
     const dir = getFolderDir(AppState.backup, file.folder)
     dir._files.push(file)
-    dir.fileCount++
     AppState.socketMessages = [...AppState.socketMessages, { file }]
   }
 

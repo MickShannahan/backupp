@@ -34,10 +34,10 @@ export class Folder {
   }
 
   get fileCount() {
-    return this._fileCount || this._files.length
+    return this._files.length
   }
 
   get folderCount() {
-    return this._folderCount || this._folders.length
+    return this._folders.length
   }
 }
