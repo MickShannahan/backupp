@@ -5,7 +5,7 @@ FROM --platform=linux/amd64 node:20-slim AS client-builder
 WORKDIR /app/client
 
 # Copy the client-side package.json and package-lock.json to the client builder container
-COPY client/package*.json .
+COPY ../client/package*.json .
 
 # Install client application dependencies
 RUN npm install
