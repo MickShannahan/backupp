@@ -22,7 +22,10 @@ function handleDrop(e){
 
 
 <template>
-<section @dragleave="dragIn = false" @mouseleave="dragIn = false" @dragover.stop.prevent="dragEnter" @drop.stop.prevent="handleDrop" :class="{dragIn}">
+  <section @dragleave.stop.prevent="dragIn = false" @mouseout.stop.prevent="dragIn = false" @dragexit.stop.prevent="dragIn = false" @dragover.stop.prevent="dragEnter" @drop.stop.prevent="handleDrop" :class="{dragIn}">
+  <small class="message bg-glass rounded-pill px-2">
+  Add files to {{ folder || '/base' }}
+  </small>
 <slot>Drop Files To add</slot>
 <FileUploader :files="droppedFiles" :folderSlug="folder"/>
 </section>
@@ -38,11 +41,24 @@ function handleDrop(e){
     left: 0;
     width: 100%;
     height: 100%;
-    outline: 2px dashed rgba(var(--bs-primary-rgb) 0.6);
+    outline: 2px dashed rgba(var(--bs-primary-rgb), 0.4);
     outline-offset: -2px;
-    background-color: rgba(var(--bs-primary-rgb) 0.2);
+    background-color: rgba(var(--bs-primary-rgb), 0.1);
     content: '';
     border-radius: 4px;
   }
+  // .message{
+  //   display: inline-block;
+  // }
 }
+
+.message{
+  position: fixed;
+  bottom: -1.75em;
+  left: 50%;
+  transform: translateX(-50%);
+  display: none;
+  z-index: 9999;
+}
+
 </style>
