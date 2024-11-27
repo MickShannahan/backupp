@@ -13,8 +13,8 @@ defineEmits(['delete', 'clicked', 'download', 'selectAll', 'changeLayout', 'sort
       <span class="badge text-bg-primary">{{ selection.length }}</span>
     </div>
     <button title="Select all (double click to de-select all)" @click="$emit('selectAll')" class="btn selectable-primary "><i class="mdi mdi-select-all"></i></button>
-    <button :disabled="!show" @click="$emit('download')" class="btn selectable-blue "><i class="mdi mdi-download"></i></button>
-    <button :disabled="!show" @click="$emit('delete')" class="btn selectable-red text-red"> <i class="mdi mdi-delete-forever"></i></button>
+    <button title="Download Selection" :disabled="!show" @click="$emit('download')" class="btn selectable-blue "><i class="mdi mdi-download"></i></button>
+    <button title="Delete Selection" :disabled="!show" @click="$emit('delete')" class="btn selectable-red text-red"> <i class="mdi mdi-delete-forever"></i></button>
     <div class="dropstart">
       <button title="View Options" type="button" class="btn selectable-primary" data-bs-toggle="dropdown" aria-expanded="false">
         <i class="mdi mdi-grid"></i>

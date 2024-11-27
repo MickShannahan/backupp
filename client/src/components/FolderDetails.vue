@@ -8,6 +8,7 @@ import { byteSize } from '@/utils/Converters.js';
 import FilesSearch from './FilesSearch.vue';
 import FileUploader from './FileUploader.vue';
 import Pop from '@/utils/Pop.js';
+import { logger } from '@/utils/Logger.js';
 
 const emit = defineEmits(['search'])
 
@@ -36,10 +37,14 @@ const hotCost = computed(()=>{
 async function deleteDir(){
   const confirmed = confirm("Are you sure you want to Delete " + activeDir.value.name + '?')
   if(!confirmed) return
-  const confirmed2 = confirm("You understand this will not only delete all of the files in this folder, but will also delete all files in sub folders too.")
-  if(!confirmed2)return
-  const confirmed3= prompt(`To Finalize delete type the name of the folder: ${activeDir.value.name}`)
-  if(confirmed3 != activeDir.value.name) return
+  const isEmpty = !activeDir.value.fileCount && !activeDir.value.folderCount
+  if(isEmpty == false){
+    logger.log('folder is not Empty', isEmpty, activeDir.value)
+    const confirmed2 = confirm("You understand this will not only delete all of the files in this folder, but will also delete all files in sub folders too.")
+    if(!confirmed2)return
+    const confirmed3= prompt(`To Finalize delete type the name of the folder: ${activeDir.value.name}`)
+    if(confirmed3 != activeDir.value.name) return
+  }
   await backupService.deleteFolder(activeDir.value.id, activeDir.value.folder)
 }
 
