@@ -30,7 +30,7 @@ export const workersService = new WorkersService()
 
 export function startWork() {
   if (workers.length < workerLimit && workers.length <= Math.round(jobQ.length / 5)) {
-    const worker = new Worker('./src/utils/UploadFile.js')
+    const worker = new Worker('./src/utils/UploadFile.mjs')
     workers.push(worker)
     worker.on('message', doJob)
     worker.on('error', workerError)
