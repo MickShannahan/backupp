@@ -1,5 +1,7 @@
 <script setup>
+import { AppState } from '@/AppState.js';
 import { backupService } from '@/services/backupService.js';
+import { logger } from '@/utils/Logger.js';
 import Pop from '@/utils/Pop.js';
 import { computed, ref, watch } from 'vue';
 
@@ -12,11 +14,34 @@ const filesToUpload = ref([])
 const progressMax = ref(0)
 const progressCurrent = ref(0)
 const progressPercent = computed(()=> Math.round((progressCurrent.value / progressMax.value)*100))
+const socketMessages = computed(()=> AppState.socketMessages)
 const uploading = ref(false)
 const menuOpen = ref(true)
 
 watch(()=>files, ()=>{
   previewFiles(files)
+})
+
+watch(socketMessages, (messages)=>{
+  if(!uploading.value) return
+  logger.log('⚡💬', messages)
+  let lastMessage = messages[messages.length-1]
+  if(lastMessage.error){
+    const upload = filesToUpload.value.find(f => lastMessage.file.name == f.name)
+    upload.failed = true
+    progressMax.value--
+  }else {
+    const upload = filesToUpload.value.find(f => lastMessage.file.name == f.name)
+    upload.complete = true
+    progressCurrent.value++
+  }
+  if( progressCurrent.value == progressMax.value){
+    if(progressMax.value)Pop.toast('Upload Complete', `uploaded ${progressMax.value} files`, 'success')
+    setTimeout(()=>{
+      uploading.value = false
+      clearQueue()
+    }, 3000)
+  }
 })
 
 async function uploadFiles(){
@@ -29,13 +54,8 @@ async function uploadFiles(){
     data.append('upload', f.file)
     if(folderSlug) data.append('folderSlug',folderSlug)
     const backup = await backupService.uploadFile(data)
-    if(backup) f.completed = true
+    if(backup) f.queued = true
     if(!backup) f.failed = true
-    progressCurrent.value++
-    if(progressCurrent.value == progressMax.value){
-      Pop.toast('File Upload Complete', '', 'success', '', 'bottom-center')
-      setTimeout(clearQueue, 3000)
-    }
   }
 }
 
@@ -67,17 +87,17 @@ function clearQueue(){
   <aside v-if="filesToUpload.length > 0" class="floating-tab">
     <div class="d-flex justify-content-between">
       <div>
-        uploading {{ filesToUpload.length }} files
-        <span v-if="folderSlug">to {{ folderSlug }}</span>
+        uploading <b>{{ filesToUpload.length }}</b> files
+        <span v-if="folderSlug">to <b class="text-primary">{{ folderSlug }}</b></span>
       </div>
       <div  v-if="menuOpen" @click="menuOpen = !menuOpen" class="selectable px-2 rounded" data-bs-toggle="collapse" data-bs-target="#files-list"><i class="mdi mdi-chevron-down"></i></div>
       <div v-else @click="menuOpen = !menuOpen" class="selectable px-2 rounded" data-bs-toggle="collapse" data-bs-target="#files-list"><i class="mdi mdi-chevron-up"></i></div>
     </div>
     <section id="files-list" class="uploading-list collapse show">
       <div class="list-item" v-for="(file, i) in filesToUpload" :key="file.preview">
-        <span v-if="!uploading">{{ i+1 }}</span>
-        <span v-else-if="file.completed"><i class="mdi mdi-checkbox-marked text-teal fs-5"></i></span>
-        <span v-else-if="file.failed"><i class="mdi mdi-close-box text-red fs-5"></i></span>
+        <span v-if="!uploading" class="fw-bold">{{ i+1 }}</span>
+        <span v-else-if="file.complete"><i class="mdi mdi-checkbox-marked text-primary fs-5"></i></span>
+        <span v-else-if="file.failed" :title="file.errorMsg"><i class="mdi mdi-close-box text-red fs-5"></i></span>
         <span v-else><i class="mdi mdi-loading mdi-spin"></i></span>
         <img class="preview" :src="file.preview" alt="">
         <input v-model="file.file.name" class="form-control border-0" type="text">
@@ -114,15 +134,16 @@ function clearQueue(){
 <style lang="scss" scoped>
 .floating-tab{
   position: fixed;
-  bottom: 1em;
-  right: 1em;
+  bottom: .75em;
+  right: .75em;
   width: 375px;
   border: 1px solid var(--bs-border);
-  background-color: rgba(var(--bs-dark-rgb), .3);
+  background-color: rgba(var(--bs-black-rgb), .2);
+  border: 1px solid var(--bs-dark);
   padding: 1.5em;
   backdrop-filter: blur(15px);
   border-radius: 8px;
-  box-shadow: 0px 3px 3px black;
+  box-shadow: 0px 3px 3px rgba(0,0,0, .2);
 
   .uploading-list{
     max-height: 200px;

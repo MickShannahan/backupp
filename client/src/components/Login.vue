@@ -45,4 +45,9 @@ async function logout() {
   </span>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.dropdown-menu{
+  z-index: 1099;
+  box-shadow: 0px 2px 2px rgba(0,0,0,.4);
+}
+</style>

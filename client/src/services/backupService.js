@@ -36,12 +36,9 @@ class BackupService {
   async uploadFile(data) {
     try {
       const res = await api.post('api/backup/files', data)
-      const file = new File(res.data)
-      const dir = getFolderDir(AppState.backup, file.folder)
-      dir._files.push(file)
-      dir.fileCount++
-      console.log('➕', file)
-      return file
+      // const dir = getFolderDir(AppState.backup, file.folder)
+      logger.log('', res.data)
+      return res.data
     } catch (error) {
       // Pop.error(error)
       console.error(error)
@@ -49,11 +46,13 @@ class BackupService {
 
   }
   async getFolder(folderPath = '') {
+    const dir = getFolderDir(AppState.backup, folderPath)
+    if (!dir.isStale) return
     logger.log('getting data for', folderPath)
     const folders = await api.get(`api/backup/folders/${urlSafe(folderPath)}`)
     const files = await api.get(`api/backup/files/${urlSafe(folderPath)}`)
     logger.log('got data', folders, files)
-    const dir = getFolderDir(AppState.backup, folderPath)
+    dir.setExp()
     folders.data.forEach(f => {
       let fold = new Folder(f)
       dir._folders[fold.name] = fold
@@ -107,6 +106,12 @@ function urlSafe(url) {
   return encodeURIComponent(url)
 }
 
+/**
+ * 
+ * @param {Folder} dir 
+ * @param {string} folderPath 
+ * @returns {Folder} dir
+ */
 export function getFolderDir(dir, folderPath) {
   if (folderPath === '') return dir
   folderPath = folderPath.startsWith('/') ? folderPath.slice(1) : folderPath

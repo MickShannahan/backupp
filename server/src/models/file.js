@@ -34,4 +34,4 @@ export const fileSchema = new Schema({
   metadata: { type: Object, default: () => { } }
 }, { timestamps: true })
 
-fileSchema.index({ name: 1, folder: 1, owner: 1 }, { unique: true })
+fileSchema.index({ name: 1, folder: 1, ownerId: 1 }, { unique: true })

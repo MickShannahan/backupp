@@ -5,17 +5,22 @@ import {computed, onMounted, watch} from 'vue'
 import { AppState } from '@/AppState.js';
 import Pop from '@/utils/Pop.js';
 import { logger } from '@/utils/Logger.js';
+import { sockets } from '@/handlers/BackupHandler.js';
 const identity = computed(()=> AppState.identity)
 const activeDir = computed(()=> AppState.activeDir)
 
 
 watch(activeDir, ()=>{
   if(!activeDir.value) return
-  if( activeDir.value.fetchedExp && activeDir.value.fetchedExp > Date.now())return
+  if(!activeDir.value.isStale)return
   logger.log('active Dir changed', activeDir.value.folderSlug)
-  activeDir.value.fetchedExp = Date.now() + (1000 *60 * 5)
   backupService.getFolder(activeDir.value.folderSlug)
 }, {immediate: true})
+
+onMounted(()=>{
+  // @ts-ignore
+  // sockets.emit('JOIN_ROOM', AppState.identity.id)
+})
 
 </script>
 

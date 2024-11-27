@@ -62,12 +62,13 @@ function toggleFileSelection(file){
     selectedFiles.value.push(file)
   }
   if(shiftDown.value && selectedFiles.value.length > 0){
+    let clicked = files.value.indexOf(file)
     let start = files.value.indexOf(selectedFiles.value[0])
-    let end = files.value.indexOf(selectedFiles.value[selectedFiles.value.length -1 ])
-    logger.log('shift click', start, end)
+    let end = start < clicked ? clicked : start
+    start = start == end ? clicked: start
+    logger.log('shift click', start, end, clicked)
     for(let i = start + 1; i < end; i++){
       const f = files.value[i]
-      logger.log('adding', f.name)
       if(selectedFiles.value.includes(f)) continue
       selectedFiles.value.push(f)
     }
@@ -125,12 +126,12 @@ async function downloadSelection(){
 
 <template>
   <FolderDetails @search="filterFiles"/>
-  <div class="container-fluid">
+  <div class="container-fluid py-2">
 
     <div class="panes my-2">
       <!-- SECTION trunk -->
       <section class="d-flex flex-column">
-        <div>
+        <div class="panes-sticky">
           <FolderTree :folder="AppState.backup" :alwaysOpen="true" :level="-1"/>
         </div>
         </section>
@@ -146,11 +147,13 @@ async function downloadSelection(){
         </FileDropZone>
     <!-- SECTION options -->
     <section >
+      <div class="panes-sticky">
         <Options :show="selectedFiles.length > 0" :selection="selectedFiles"
           @delete="deleteFiles"
           @selectAll="selectAll"
           @download="downloadSelection"
           ></Options>
+        </div>
     </section>
   </div>
 </div>
@@ -165,7 +168,7 @@ async function downloadSelection(){
 
 .panes{
   display: grid;
-  grid-template-columns: 250px 1fr 60px;
+  grid-template-columns: var(--left-pane-size) 1fr 60px;
   grid-template-rows: 1fr;
   min-height: 100dvh;
   &>section{
@@ -177,6 +180,10 @@ async function downloadSelection(){
   }
   &>section:last-child{
     border-left: 1px solid rgba(128, 128, 128, 0.2);
+  }
+  .panes-sticky{
+    position: sticky;
+    top: 92px;
   }
 }
 

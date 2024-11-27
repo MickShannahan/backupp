@@ -18,6 +18,6 @@ export const AppState = reactive({
   }),
   /** @type {Folder} */
   activeDir: null,
-
+  socketMessages: []
 })
 

@@ -1,3 +1,4 @@
+import { logger } from '../utils/Logger.js'
 import { SocketHandler } from '../utils/SocketHandler.js'
 
 export class RoomHandler extends SocketHandler {
@@ -13,6 +14,7 @@ export class RoomHandler extends SocketHandler {
   }
 
   joinRoom(roomName) {
+    logger.log('user joined room')
     this.socket.join(roomName)
     this.messageSelf('JOINED_ROOM', roomName)
     this.messageRoom(roomName, 'USER_JOINED', this.profile)

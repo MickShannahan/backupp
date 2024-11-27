@@ -48,6 +48,7 @@
 .bg-glass {
   background: rgba(var(--bs-black-rgb), .2);
   backdrop-filter: blur(10px);
+  border-color: rgba(var(--bs-light-rgb), .2) !important;
 }
 
 .no-highlight {

@@ -23,6 +23,7 @@ emitter('selected', file)
       <div>
         <small>{{ file.dateShort }}</small> <i class="mdi mdi-circle-small"></i>
         <small>{{( file.size /1024 /1024).toFixed(2) }}mb</small>
+        <a title="open source file" :href="file.url" target="_blank" class="btn btn-small original-button selectable-primary"><i class="mdi mdi-file-export"></i></a>
       </div>
     </div>
     <span v-if="selected" class="select-box"><i class="mdi mdi-checkbox-marked  fs-5"></i></span>
@@ -31,17 +32,16 @@ emitter('selected', file)
 
 
 <style lang="scss" scoped>
-@container (width > 375px){
-  .card{
-    flex-direction: row;
-    justify-content: flex-start
-  }
-  .card>img:not(.blur-bg){
-    width: 25%!important;
-  }
-  .card>.card-body{
-    width: 75%;
-  }
+
+.card:hover .original-button{
+    opacity: .9;
+}
+.original-button{
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  transition: all .3s .3s ease;
 }
 
 .card.file-card{

@@ -22,6 +22,14 @@ export class Folder {
     this._folders = data._folders ?? {}
     this.fileCount = data.fileCount ?? this._files.length
     this.folderCount = data.folderCount ?? this._folders.length
-    this.fetchedExp = null
+    this.fetchedExp = 0
+  }
+
+  get isStale() {
+    return this.fetchedExp < Date.now()
+  }
+
+  setExp(minutes = 6) {
+    this.fetchedExp = Date.now() * (1000 * 60 * minutes)
   }
 }

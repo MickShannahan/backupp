@@ -6,23 +6,27 @@ import { AppState } from './AppState.js';
 
 <template>
   <header>
-    <Navbar />
   </header>
   <main>
     <router-view />
   </main>
-
+<footer class="bg-glass">
+  <Navbar />
+</footer>
 </template>
 
 <style lang="scss">
 @import '@/assets/scss/main.scss';
-:root {
-  --main-height: calc(100vh - 32px - 64px);
+:root{
+  --left-pane-size: 250px;
 }
 
 footer {
-  display: grid;
-  place-content: center;
-  height: 32px;
+  position: fixed;
+  bottom: 0.5em;
+  left: 0.5em;
+  padding: .5rem 1rem;
+  width: var(--left-pane-size);
+  border-radius: 8px;
 }
 </style>
