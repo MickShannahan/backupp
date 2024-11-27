@@ -22,6 +22,8 @@ const time = ref(0)
 const errorLogs = ref([])
 
 watch(()=>files, ()=>{
+  if(uploading.value) return Pop.toast("Upload in progress", '', 'warning')
+  if(progressMax.value > 0) clearQueue()
   previewFiles(files)
 })
 
@@ -58,13 +60,12 @@ watch(socketMessages, (messages)=>{
   if( progressCurrent.value == progressMax.value){
     uploading.value = false
     if(progressMax.value)Pop.toast('Upload Complete', `uploaded ${progressMax.value} files`, 'success')
-    console.log('⏱️',time.value)
   }
 })
 
 async function uploadFiles(){
   uploading.value = true
-  console.log('uploading',filesToUpload.value.length)
+  progressCurrent.value = 0
   progressMax.value = filesToUpload.value.length
   
   for (const f of filesToUpload.value){

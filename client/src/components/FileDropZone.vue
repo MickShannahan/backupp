@@ -22,7 +22,7 @@ function handleDrop(e){
 
 
 <template>
-  <section @dragleave.stop.prevent="dragIn = false" @mouseout.stop.prevent="dragIn = false" @dragexit.stop.prevent="dragIn = false" @dragover.stop.prevent="dragEnter" @drop.stop.prevent="handleDrop" :class="{dragIn}">
+  <section @dragleave.stop.prevent="dragIn = false" @dragenter.stop.prevent="dragEnter" @dragover.prevent @drop.stop.prevent="handleDrop" :class="{dragIn}">
   <small class="message bg-glass rounded-pill px-2">
   Add files to {{ folder || '/base' }}
   </small>
