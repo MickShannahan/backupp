@@ -5,7 +5,7 @@ import Login from './Login.vue';
 import { byteSize } from '@/utils/Converters.js';
 import { AppState } from '@/AppState.js';
 
-const theme = ref(loadState('theme') || 'light')
+const theme = ref(loadState('theme') || 'dark')
 const accountSize = computed(()=>byteSize(AppState.accountBytes))
 
 onMounted(() => {
