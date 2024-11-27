@@ -6,6 +6,7 @@ import { BadRequest } from "../utils/Errors.js";
 import { FileDTO } from "../models/file.js";
 import { foldersService } from "../services/FoldersService.js";
 import { workersService } from "../services/WorkerService.js";
+import { dataService } from "../services/DataService.js";
 
 
 
@@ -23,6 +24,8 @@ export class UploadsController extends BaseController {
       .post('/files', this.addFile)
       .delete('/files/:fileId', this.deleteFile)
       .delete('/folders/:folderId', this.deleteFolder)
+      .get('/data', this.getFolderData)
+      .get('/data/:folderSlug', this.getFolderData)
   }
 
   async getFilesInFolder(req, res, next) {
@@ -94,6 +97,17 @@ export class UploadsController extends BaseController {
       const userId = req.userInfo.id
       const deleteData = await foldersService.deleteFolder(folderId, userId)
       res.send(deleteData)
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  async getFolderData(req, res, next) {
+    try {
+      const user = req.userInfo
+      const folder = `${user.id}${req.params.folderSlug ? `/${req.params.folderSlug}` : ''}`
+      const data = await dataService.getFolderData(folder)
+      res.send(data)
     } catch (error) {
       next(error)
     }

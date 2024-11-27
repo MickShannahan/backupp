@@ -49,6 +49,9 @@ emitter('selected', file)
 }
 
 .card{
+  flex-direction: var(--card-direction);
+  flex-wrap: wrap;
+  justify-content: space-between;
   height: 100%;
   width: 100%;
   overflow: hidden;
@@ -73,9 +76,13 @@ emitter('selected', file)
     opacity: .6;
   }
   img{
-    width: 100%;
+    height: var(--image-size);
+    width:  auto;
+    min-width: 20%;
+    max-width: 100%;
+    margin: auto;
     object-fit: contain;
-    height: calc(var(--files-width) * .55);
+    object-position: center;
     position: relative;
     user-select: none;
 }

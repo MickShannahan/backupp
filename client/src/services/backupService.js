@@ -11,6 +11,11 @@ import { DownloadStream } from "dl-stream"
 
 
 class BackupService {
+  async getFolderData() {
+    const res = await api.get('api/backup/data')
+    logger.log('💾', res.data)
+    return res.data
+  }
   async deleteFolder(folderId, folderPath) {
     const res = await api.delete(`api/backup/folders/${folderId}`)
     logger.log(res.data)

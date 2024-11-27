@@ -18,7 +18,7 @@ const worker = workerName + '-' + workerId
 
 async function init() {
   parentPort.on('message', async ({ action, data }) => {
-    logger.log(`${worker} got job ${JSON.stringify(action)}`)
+    // logger.log(`${worker} got job ${JSON.stringify(action)}`)
     switch (action) {
       case 'uploadImage':
         await uploadImage(data)
@@ -32,7 +32,6 @@ async function init() {
     }
   })
 }
-
 function readyForWork() {
   parentPort.postMessage({ status: 'ready', workerId })
 }

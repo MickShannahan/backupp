@@ -8,7 +8,7 @@ import { socketProvider } from '../SocketProvider.js'
 
 const jobQ = []
 const workers = []
-const workerLimit = 1
+const workerLimit = 2
 
 class WorkersService {
   /**
@@ -29,22 +29,21 @@ class WorkersService {
 export const workersService = new WorkersService()
 
 export function startWork() {
-  if (workers.length < workerLimit && workers.length <= jobQ.length) {
-    logger.log('adding worker to 🤽', workers.length, jobQ.length)
+  if (workers.length < workerLimit && workers.length <= Math.round(jobQ.length / 5)) {
     const worker = new Worker('./src/utils/UploadFile.js')
     workers.push(worker)
     worker.on('message', doJob)
     worker.on('error', workerError)
     worker.on('exit', () => {
       workers.splice(workers.findIndex(w => w.threadId === worker.threadId), 1)
-      logger.warn('⏲️', workers.length)
+      // logger.warn('⏲️', workers.length)
     })
   }
   // logger.log('🏁All work done')
 }
 
 async function doJob(message) {
-  logger.log('☎️', message.status)
+  // logger.log('☎️', message.status)
   try {
     switch (message.status) {
       case 'ready':
@@ -55,7 +54,6 @@ async function doJob(message) {
       case 'done':
         // TODO socket message front end
         socketProvider.messageUser(fileRecord.ownerId.toString(), 'FILE_UPLOADED', fileRecord)
-        logger.log('done')
         break
       default: logger.error(message)
     }
@@ -67,7 +65,7 @@ async function doJob(message) {
 
 function continueWork(workerId) {
   const worker = workers.find(w => w.threadId === workerId)
-  logger.log('[JOBS LEFT]', jobQ.length)
+  // logger.log('[JOBS LEFT]', jobQ.length)
   if (jobQ.length > 0) {
     const nextJob = jobQ.shift()
     worker.postMessage(nextJob)

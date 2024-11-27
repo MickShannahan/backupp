@@ -121,6 +121,43 @@ async function downloadSelection(){
   backupService.downloadFromUrls(urls, activeDir.value.name)
 }
 
+const gridSize = ref('175px')
+const imageSize = ref('90px')
+const cardDirection = ref('column')
+function changeLayout(layout){
+switch(layout){
+  case 'list':
+    gridSize.value = '700px'
+    imageSize.value = '80px'
+    cardDirection.value = 'row'
+    break
+  case 'column':
+    gridSize.value = '400px'
+    imageSize.value = '80px'
+    cardDirection.value = 'row'
+    break
+  case 'grid':
+    gridSize.value = '175px'
+    imageSize.value = '90px'
+    cardDirection.value = 'column'
+    break
+  case 'grid-large':
+    gridSize.value = '225px'
+    imageSize.value = '140px'
+    cardDirection.value = 'column'
+    break
+  case 'grid-xl':
+    gridSize.value = '300px'
+    imageSize.value = '275px'
+    cardDirection.value = 'column'
+    break
+  default:
+    gridSize.value = '175px'
+    imageSize.value = '90px'
+    cardDirection.value = 'column'
+}
+}
+
 </script>
 
 
@@ -152,6 +189,7 @@ async function downloadSelection(){
           @delete="deleteFiles"
           @selectAll="selectAll"
           @download="downloadSelection"
+          @changeLayout="changeLayout"
           ></Options>
         </div>
     </section>
@@ -188,7 +226,9 @@ async function downloadSelection(){
 }
 
 .files-grid{
-  --files-width: 175px;
+  --files-width: v-bind(gridSize);
+  --image-size: v-bind(imageSize);
+  --card-direction: v-bind(cardDirection);
   margin-top: -75px;
   padding-top: 75px;
   display: grid;

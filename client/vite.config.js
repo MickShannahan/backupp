@@ -14,6 +14,7 @@ export default defineConfig({
       overrideConfigFile: 'eslint.config.js',
     }),
   ],
+  base: '',
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
@@ -21,6 +22,7 @@ export default defineConfig({
   },
   build: {
     sourcemap: false,
+    outDir: 'docs'
   },
   server: {
     port: 8080

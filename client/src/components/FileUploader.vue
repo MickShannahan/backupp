@@ -17,14 +17,26 @@ const progressPercent = computed(()=> Math.round((progressCurrent.value / progre
 const socketMessages = computed(()=> AppState.socketMessages)
 const uploading = ref(false)
 const menuOpen = ref(true)
+const time = ref(0)
 
 watch(()=>files, ()=>{
   previewFiles(files)
 })
 
+let timer = ref(null)
+watch(uploading, (up)=>{
+  if(uploading.value && !timer.value){
+    time.value = 0
+    logger.log('start timer', time.value)
+    timer.value = setInterval(()=> time.value += .1, 100)
+  } else {
+  logger.log('start timer')
+  timer.value = clearInterval(timer.value)
+  }
+})
+
 watch(socketMessages, (messages)=>{
   if(!uploading.value) return
-  logger.log('⚡💬', messages)
   let lastMessage = messages[messages.length-1]
   if(lastMessage.error){
     const upload = filesToUpload.value.find(f => lastMessage.file.name == f.name)
@@ -36,9 +48,10 @@ watch(socketMessages, (messages)=>{
     progressCurrent.value++
   }
   if( progressCurrent.value == progressMax.value){
+    uploading.value = false
     if(progressMax.value)Pop.toast('Upload Complete', `uploaded ${progressMax.value} files`, 'success')
+    console.log('⏱️',time.value)
     setTimeout(()=>{
-      uploading.value = false
       clearQueue()
     }, 3000)
   }
@@ -77,6 +90,7 @@ function clearQueue(){
   filesToUpload.value = []
   progressMax.value = 0
   progressCurrent.value = 0
+  time.value = 0
   // filesForm.value.reset()
 }
 
@@ -95,7 +109,7 @@ function clearQueue(){
     </div>
     <section id="files-list" class="uploading-list collapse show">
       <div class="list-item" v-for="(file, i) in filesToUpload" :key="file.preview">
-        <span v-if="!uploading" class="fw-bold">{{ i+1 }}</span>
+        <span v-if="!file.complete" class="fw-bold">{{ i+1 }}</span>
         <span v-else-if="file.complete"><i class="mdi mdi-checkbox-marked text-primary fs-5"></i></span>
         <span v-else-if="file.failed" :title="file.errorMsg"><i class="mdi mdi-close-box text-red fs-5"></i></span>
         <span v-else><i class="mdi mdi-loading mdi-spin"></i></span>
@@ -104,7 +118,7 @@ function clearQueue(){
       </div>
     </section>
     <section class="mt-1">
-      <div v-if="!uploading">
+      <div v-if="!uploading && time == 0">
         <button @click="clearQueue()" class="w-50 btn">clear</button>
         <button @click="uploadFiles()" class="w-50 btn btn-outline-primary">Upload! </button>
       </div>
@@ -124,7 +138,7 @@ function clearQueue(){
       <div class="uploading-animation">
         
       </div>
-      <small class="w-100 text-center">{{ progressCurrent }} / {{ progressMax }}</small>
+      <small class="w-100 text-center">{{ progressCurrent }} / {{ progressMax }} <span class="px-2 bg-teal-soft rounded"><i class="mdi mdi-timer"></i>{{ time.toFixed(1) }}s</span></small>
     </div>
   </section>
   </aside>
