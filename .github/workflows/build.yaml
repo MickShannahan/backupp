@@ -2,48 +2,54 @@ name: Build VUE App 🛠️
 
 on:
   push:
-    branches: ['main']
+    branches: ['main'] 
 
 # Sets the GITHUB_TOKEN permissions to allow deployment to GitHub Pages
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: read  
+  pages: write  
+  id-token: write  
 
 jobs:
   pages_deploy:
+    # Defines the deployment environment and URL for the GitHub Pages deployment.
     environment:
-        name: github-pages
-        url: ${{ steps.deployment.outputs.page_url }}
+        name: github-pages  
+        url: ${{ steps.deployment.outputs.page_url }} 
     runs-on: ubuntu-latest
+
     if: contains(github.event.head_commit.message, 'deploy')
 
     steps:
-      - name: Checkout code
+      - name: Checkout code 👀
         uses: actions/checkout@v3
 
-      - name: Set up Node.js
+      # Set up Node.js environment with a specific version (22).
+      - name: Set up Node.js 🛠️
         uses: actions/setup-node@v3
         with:
-          node-version: 22
+          node-version: 22 
 
-      - name: Install dependencies
-        working-directory: ./client
-        run: npm install
+      - name: Install dependencies 📦
+        working-directory: ./client  # Specify the folder where the app code resides (./client for fullstack applications).
+        run: npm ci  # Clean install of the project's dependencies.
 
-      - name: Build the app
-        working-directory: ./client
-        run: npm run build
+      # Build the VUE application
+      - name: Build the app 🏗️
+        working-directory: ./client 
+        run: npm run build  # Runs the 'build' script defined in the package.json file
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
+      # Configure the GitHub Pages deployment
+      - name: Setup Pages 📃
+        uses: actions/configure-pages@v4  
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+      # Uploads the build output for deployment to GitHub Pages.
+      - name: Upload artifact ⬆️
+        uses: actions/upload-pages-artifact@v3  
         with:
-          # Upload docs folder
-          path: './client/docs'
+          path: './client/docs'  # Path to the built app's static files, this can be configured in the `vite.config` file with 'outputDir'
 
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      # Deploy the application to GitHub Pages using the 'deploy-pages' pre-build action.
+      - name: Deploy to GitHub Pages ✨
+        id: deployment  
+        uses: actions/deploy-pages@v4 
