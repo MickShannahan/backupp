@@ -19,15 +19,12 @@ jobs:
         with:
           node-version: 22
 
-      - name: Change to client directory
-        run: |
-         cd client
-         ls
-
       - name: Install dependencies
+        working-directory: ./client
         run: npm install
 
       - name: Build the app
+        working-directory: ./client
         run: npm run build
 
       - name: Push to GitHub
