@@ -1,0 +1,15 @@
+# build.yaml
+name: My First Build 🥚 #name of the Action
+
+on: [push] #trigger of the action
+
+jobs: #jobs is a group of tasks for this Action to run
+  hatchling: # name of job
+    runs-on: ubuntu-latest # the system this job runs on
+    steps: #different steps this job needs to complete in order
+      - name: Checkout code 🔍 # name of step
+        uses: actions/checkout@v3 
+        #uses is special, this runs code published somewhere else in github
+        #'checkout' is a pre-built action that pulls your code down into this system
+      - name: Print a Greeting ⌨️
+        run: echo "🐣 Hello from GitHub Actions!"
