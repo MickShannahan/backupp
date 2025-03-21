@@ -20,7 +20,9 @@ jobs:
           node-version: 22
 
       - name: Change to client directory
-        run: cd client
+        run: |
+         cd client
+         ls
 
       - name: Install dependencies
         run: npm install
